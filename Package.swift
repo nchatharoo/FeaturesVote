@@ -4,5 +4,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "FeaturesVote"
+    name: "FeatureVote",
+    platforms: [
+        .iOS(.v18)
+    ],
+    products: [
+        .library(
+            name: "FeatureVote",
+            targets: ["FeatureVote"]),
+    ],
+    targets: [
+        .target(
+            name: "FeatureVote",
+            resources: []
+        )
+    ]
 )
