@@ -14,6 +14,10 @@ FeaturesVote provides a complete solution for collecting user votes on potential
 
 This package is designed to be easy to integrate, customizable, and reliable. It's built with SwiftUI for modern UI integration.
 
+## Demo
+
+https://github.com/user-attachments/assets/7485d3f6-2a97-4e2b-9575-cb911c6d3eaa
+
 ## Requirements
 
 - iOS 18.0+ / macOS 13.0+
