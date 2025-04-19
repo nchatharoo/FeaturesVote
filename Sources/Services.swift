@@ -9,14 +9,14 @@ import Foundation
 import Security
 import SwiftUI
 
-/// Protocole définissant un service de notification pour les votes
+/// Protocol defining a notification service for votes
 public protocol VoteNotificationService: Sendable {
-    /// Méthode pour envoyer un vote à un service externe
-    /// - Parameter feature: La fonctionnalité qui a reçu un vote
+    /// Method to send a vote to an external service
+    /// - Parameter feature: The feature that received a vote
     func sendVote(feature: Features) async throws
 }
 
-/// Service de notification via Discord webhook
+/// Notification service via Discord webhook
 public actor DiscordVoteService: VoteNotificationService {
     private let webhookURL: String
     
@@ -25,22 +25,22 @@ public actor DiscordVoteService: VoteNotificationService {
     }
     
     public func sendVote(feature: Features) async throws {
-        // Message pour Discord
+        // Message for Discord
         let message: [String: Any] = [
             "username": "Feature Vote Bot",
             "embeds": [
                 [
-                    "title": "Nouveau vote!",
-                    "color": 5814783, // Bleu
+                    "title": "New vote!",
+                    "color": 5814783, // Blue
                     "fields": [
-                        ["name": "Fonctionnalité", "value": feature.title, "inline": true],
+                        ["name": "Feature", "value": feature.title, "inline": true],
                         ["name": "Description", "value": feature.description]
                     ]
                 ]
             ]
         ]
         
-        // Envoi au webhook
+        // Send to webhook
         guard let jsonData = try? JSONSerialization.data(withJSONObject: message) else {
             throw VoteError.jsonConversionFailed
         }
@@ -59,13 +59,13 @@ public actor DiscordVoteService: VoteNotificationService {
     }
 }
 
-/// Service pour stocker les votes dans la Keychain
+/// Service to store votes in the Keychain
 actor KeychainVoteStorage {
     private let appIdentifier: String
     private let maxVotesPerDay: Int
     private let minTimeBetweenVotes: TimeInterval
     
-    // Clés pour la Keychain
+    // Keys for the Keychain
     private var votedFeaturesKey: String { "\(appIdentifier).votedFeatures" }
     private var lastVoteTimeKey: String { "\(appIdentifier).lastVoteTime" }
     private var votesCountTodayKey: String { "\(appIdentifier).votesCountToday" }
@@ -157,13 +157,13 @@ actor KeychainVoteStorage {
     // MARK: - Vote Limitation Logic
     
     func canVoteForFeature(id: String) -> Bool {
-        // 1. Vérifier si l'utilisateur a déjà voté pour cette fonctionnalité
+        // 1. Check if the user has already voted for this feature
         let votedFeatures = loadStringArray(forKey: votedFeaturesKey)
         if votedFeatures.contains(id) {
             return false
         }
         
-        // 2. Vérifier la limite de temps entre votes
+        // 2. Check the time limit between votes
         if let lastVoteTime = loadDate(forKey: lastVoteTimeKey) {
             let timeSinceLastVote = Date().timeIntervalSince(lastVoteTime)
             if timeSinceLastVote < minTimeBetweenVotes {
@@ -171,7 +171,7 @@ actor KeychainVoteStorage {
             }
         }
         
-        // 3. Vérifier la limite journalière
+        // 3. Check the daily limit
         let today = Calendar.current.startOfDay(for: Date())
         let lastVoteDate = loadDate(forKey: lastVoteDateKey) ?? Date(timeIntervalSince1970: 0)
         
@@ -181,7 +181,7 @@ actor KeychainVoteStorage {
                 return false
             }
         } else {
-            // Nouveau jour - réinitialiser le compteur
+            // New day - reset the counter
             saveInteger(0, forKey: votesCountTodayKey)
         }
         
@@ -189,15 +189,15 @@ actor KeychainVoteStorage {
     }
     
     func recordVote(forFeatureId id: String) {
-        // Enregistrer la fonctionnalité votée
+        // Record the voted feature
         var votedFeatures = loadStringArray(forKey: votedFeaturesKey)
         votedFeatures.append(id)
         saveStringArray(votedFeatures, forKey: votedFeaturesKey)
         
-        // Enregistrer l'heure du vote
+        // Record the vote time
         saveDate(Date(), forKey: lastVoteTimeKey)
         
-        // Mettre à jour le compteur journalier
+        // Update the daily counter
         let today = Calendar.current.startOfDay(for: Date())
         let lastVoteDate = loadDate(forKey: lastVoteDateKey) ?? Date(timeIntervalSince1970: 0)
         

@@ -20,7 +20,7 @@ import SwiftUI
     
     public var userVotedStatus: [String: Bool] = [:]
     
-    /// Initialisation avec un service de notification personnalisé
+    /// Initialization with a custom notification service
     public init(
         notificationService: VoteNotificationService,
         appIdentifier: String,
@@ -37,7 +37,7 @@ import SwiftUI
         self.jsonFilename = jsonFilename
     }
     
-    /// Initialisation avec un service Discord (pour rétrocompatibilité)
+    /// Initialization with a Discord service (for backward compatibility)
     public convenience init(config: VoteConfig, jsonFilename: String) {
         let service: VoteNotificationService
         
@@ -58,18 +58,18 @@ import SwiftUI
         errorMessage = nil
         guard let url = Bundle.main.url(forResource: jsonFilename,
                                         withExtension: "json") else {
-            errorMessage = "Fichier JSON non trouvé: \(jsonFilename)"
+            errorMessage = "JSON file not found: \(jsonFilename)"
             isLoading = false
             return
         }
         
         do {
-            // Charger les données du fichier
+            // Load data from file
             let jsonData = try Data(contentsOf: url)
             
             loadFeatures(from: jsonData)
         } catch {
-            errorMessage = "Erreur de chargement du fichier: \(error.localizedDescription)"
+            errorMessage = "File loading error: \(error.localizedDescription)"
             isLoading = false
         }
     }
@@ -82,13 +82,13 @@ import SwiftUI
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
             
-            // Décoder les données
+            // Decode the data
             let loadedFeatures = try decoder.decode([Features].self, from: jsonData)
             
             Task {
                 let votedFeatures = await storageService.getVotedFeatures()
                 
-                // Initialiser le dictionnaire userVotedStatus
+                // Initialize the userVotedStatus dictionary
                 var updatedVoteStatus = [String: Bool]()
                 for feature in loadedFeatures {
                     updatedVoteStatus[feature.id] = votedFeatures.contains(feature.id)
@@ -99,45 +99,45 @@ import SwiftUI
                 self.isLoading = false
             }
         } catch {
-            self.errorMessage = "Erreur de chargement: \(error.localizedDescription)"
+            self.errorMessage = "Loading error: \(error.localizedDescription)"
             self.isLoading = false
         }
     }
     
     public func voteForFeature(id: String) async {
         guard features.contains(where: { $0.id == id }) else {
-            errorMessage = "Fonctionnalité non trouvée"
+            errorMessage = "Feature not found"
             return
         }
         
-        // Vérifier si l'utilisateur a déjà voté
+        // Check if the user has already voted
         if userVotedStatus[id] == true {
-            errorMessage = "Vous avez déjà voté pour cette fonctionnalité"
+            errorMessage = "You have already voted for this feature"
             return
         }
         
         do {
-            // Vérifier la limitation des votes
+            // Check vote limitations
             guard await storageService.canVoteForFeature(id: id) else {
                 throw VoteError.rateLimited
             }
             
-            // Marquer comme voté localement
+            // Mark as voted locally
             userVotedStatus[id] = true
             
-            // Enregistrer le vote
+            // Record the vote
             await storageService.recordVote(forFeatureId: id)
             
-            // Trouver la fonctionnalité pour l'envoyer au service de notification
+            // Find the feature to send to the notification service
             if let feature = features.first(where: { $0.id == id }) {
-                // Envoyer la notification
+                // Send the notification
                 try await notificationService.sendVote(feature: feature)
             }
         } catch {
             if let voteError = error as? VoteError {
                 errorMessage = voteError.errorDescription
             } else {
-                errorMessage = "Erreur: \(error.localizedDescription)"
+                errorMessage = "Error: \(error.localizedDescription)"
             }
         }
     }

@@ -1,60 +1,60 @@
 import SwiftUI
 
-/// Structure de thème pour personnaliser l'apparence des vues FeaturesVote
+/// Theme structure to customize the appearance of FeaturesVote views
 public struct FeaturesTheme: Sendable {
-    // MARK: - Typographie
+    // MARK: - Typography
     
-    /// Poids de la police pour les titres
+    /// Font weight for titles
     public var titleFontWeight: Font.Weight
     
-    /// Taille de la police pour les titres
+    /// Font size for titles
     public var titleFontSize: CGFloat
     
-    /// Nom de la police personnalisée pour les titres (optionnel)
+    /// Custom font name for titles (optional)
     public var titleFontName: String?
     
-    /// Poids de la police pour le corps du texte
+    /// Font weight for body text
     public var bodyFontWeight: Font.Weight
     
-    /// Taille de la police pour le corps du texte
+    /// Font size for body text
     public var bodyFontSize: CGFloat
     
-    /// Nom de la police personnalisée pour le corps du texte (optionnel)
+    /// Custom font name for body text (optional)
     public var bodyFontName: String?
     
-    /// Poids de la police pour les étiquettes
+    /// Font weight for captions
     public var captionFontWeight: Font.Weight
     
-    /// Taille de la police pour les étiquettes
+    /// Font size for captions
     public var captionFontSize: CGFloat
     
-    /// Nom de la police personnalisée pour les étiquettes (optionnel)
+    /// Custom font name for captions (optional)
     public var captionFontName: String?
     
     // MARK: - Couleurs
     
-    /// Couleur d'accentuation principale (pour les votes actifs, etc.)
+    /// Main accent color (for active votes, etc.)
     public var accentColor: Color
     
-    /// Couleur du texte primaire
+    /// Primary text color
     public var primaryTextColor: Color
     
-    /// Couleur du texte secondaire
+    /// Secondary text color
     public var secondaryTextColor: Color
     
-    /// Couleur d'arrière-plan principale
+    /// Main background color
     public var backgroundColor: Color
     
-    /// Couleur d'arrière-plan pour les cartes
+    /// Background color for cards
     public var cardBackgroundColor: Color
     
-    /// Couleur du bouton de vote (non voté)
+    /// Vote button color (not voted)
     public var voteButtonColor: Color
     
-    /// Initialisation du thème avec toutes les options de personnalisation
-    /// Utilise des valeurs par défaut pour tous les paramètres
+    /// Initialize the theme with all customization options
+    /// Uses default values for all parameters
     public init(
-        // Typographie
+        // Typography
         titleFontWeight: Font.Weight = .bold,
         titleFontSize: CGFloat = 17,
         titleFontName: String? = nil,
@@ -64,7 +64,7 @@ public struct FeaturesTheme: Sendable {
         captionFontWeight: Font.Weight = .regular,
         captionFontSize: CGFloat = 13,
         captionFontName: String? = nil,
-        // Couleurs
+        // Colors
         accentColor: Color = .blue,
         primaryTextColor: Color = .primary,
         secondaryTextColor: Color = .secondary,
@@ -91,7 +91,7 @@ public struct FeaturesTheme: Sendable {
         self.voteButtonColor = voteButtonColor
     }
     
-    // Helpers pour appliquer les polices
+    // Helpers to apply fonts
     public func applyTitleFont(to text: Text) -> Text {
         if let customFont = titleFontName {
             return text.font(.custom(customFont, size: titleFontSize, relativeTo: .headline))
@@ -114,24 +114,21 @@ public struct FeaturesTheme: Sendable {
     }
 }
 
-// MARK: - Environment Key et Extension
 
-/// Clé d'environnement pour le thème FeaturesVote
+/// Environment key for the FeaturesVote theme
 private struct FeaturesThemeKey: EnvironmentKey {
     static let defaultValue = FeaturesTheme()
 }
 
 extension EnvironmentValues {
-    /// Accès au thème FeaturesVote via l'environnement
+    /// Access to the FeaturesVote theme via the environment
     public var featuresTheme: FeaturesTheme {
         get { self[FeaturesThemeKey.self] }
         set { self[FeaturesThemeKey.self] = newValue }
     }
 }
 
-// MARK: - ViewModifier pour appliquer le thème
-
-/// Modificateur pour appliquer un thème FeaturesVote à une vue
+/// Modifier to apply a FeaturesVote theme to a view
 public struct FeaturesThemeModifier: ViewModifier {
     let theme: FeaturesTheme
     
@@ -145,12 +142,10 @@ public struct FeaturesThemeModifier: ViewModifier {
     }
 }
 
-// MARK: - Extension View pour simplifier l'application du thème
-
 extension View {
-    /// Applique un thème complet aux vues FeaturesVote
-    /// - Parameter theme: Le thème à appliquer
-    /// - Returns: La vue avec le thème appliqué
+    /// Applies a complete theme to FeaturesVote views
+    /// - Parameter theme: The theme to apply
+    /// - Returns: The view with the theme applied
     public func featuresTheme(_ theme: FeaturesTheme) -> some View {
         self.modifier(FeaturesThemeModifier(theme: theme))
     }

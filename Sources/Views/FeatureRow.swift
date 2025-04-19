@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-/// Vue pour afficher une ligne de fonctionnalité
+/// View to display a feature row
 public struct FeatureRow: View {
     let feature: Features
     let onVote: () -> Void
     @Binding var userVoted: Bool
     
-    // Accès au thème via l'environnement
+    // Access the theme via the environment
     @Environment(\.featuresTheme) private var theme
     
     public init(feature: Features, userVoted: Binding<Bool>, onVote: @escaping () -> Void) {
@@ -24,7 +24,7 @@ public struct FeatureRow: View {
     
     public var body: some View {
         HStack(spacing: 16) {
-            // Bouton de vote à gauche
+            // Vote button on the left
             VStack {
                 Button(action: onVote) {
                     VStack(spacing: 4) {
@@ -44,7 +44,7 @@ public struct FeatureRow: View {
             }
             .padding(.trailing, 4)
             
-            // Contenu de la fonctionnalité
+            // Feature content
             VStack(alignment: .leading, spacing: 6) {
                 theme.applyTitleFont(to: Text(feature.title))
                     .foregroundStyle(theme.primaryTextColor)

@@ -10,7 +10,7 @@ import SwiftUI
 public struct FeatureListView: View {
     @Bindable var viewModel: FeatureVoteViewModel
     
-    // Accès au thème via l'environnement
+    // Access the theme via the environment
     @Environment(\.featuresTheme) private var theme
     
     public init(viewModel: FeatureVoteViewModel) {
@@ -20,7 +20,7 @@ public struct FeatureListView: View {
     public var body: some View {
         Group {
             if viewModel.isLoading {
-                ProgressView("Chargement...")
+                ProgressView("Loading...")
                     .tint(theme.accentColor)
             } else {
                 List {
@@ -42,7 +42,7 @@ public struct FeatureListView: View {
                 .background(theme.backgroundColor)
             }
         }
-        .alert("Erreur", isPresented: .init(
+        .alert("Error", isPresented: .init(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.clearError() } }
         )) {

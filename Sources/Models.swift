@@ -28,13 +28,13 @@ public enum VoteError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .featureNotFound:
-            return "La fonctionnalité demandée n'a pas été trouvée"
+            return "The requested feature was not found"
         case .rateLimited:
-            return "Limite de votes atteinte, veuillez réessayer plus tard"
+            return "Vote limit reached, please try again later"
         case .jsonConversionFailed:
-            return "Erreur lors de la conversion des données"
+            return "Error during data conversion"
         case .webhookFailed:
-            return "Erreur lors de l'envoi des données"
+            return "Error sending data"
         }
     }
 }
