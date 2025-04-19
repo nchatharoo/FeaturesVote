@@ -16,7 +16,12 @@ This package is designed to be easy to integrate, customizable, and reliable. It
 
 ## Demo
 
-https://github.com/user-attachments/assets/7485d3f6-2a97-4e2b-9575-cb911c6d3eaa
+https://github.com/user-attachments/assets/8d408bcc-aba2-4bf7-b5cb-d92d4e9402cf
+
+
+
+https://github.com/user-attachments/assets/9c955380-fa98-461b-a250-2947647f337c
+
 
 ## Requirements
 
